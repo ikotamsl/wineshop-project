@@ -126,7 +126,6 @@ position.hasMany(cart, {
 });
 cart.belongsTo(position, {
     foreignKey: 'position_id'
-
 });
 
 module.exports = {
