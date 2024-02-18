@@ -2,6 +2,7 @@
 
 const sequelize = require('../db');
 const {DataTypes} = require('sequelize');
+const {add} = require("nodemon/lib/rules");
 
 const customer = sequelize.define('customer', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
@@ -66,28 +67,57 @@ const attribute = sequelize.define('attribute', {
     attr_value: {type: DataTypes.STRING, isNull: false}
 });
 
-customer.hasMany(contact);
+customer.hasMany(address, {
+    foreignKey: 'address_id'
+});
+address.belongsTo(customer, {
+    foreignKey: 'customer_id'
+});
 
-customer.hasMany(address);
-address.belongsTo(customer)
+customer.hasMany(contact, {
+    foreignKey: 'contact_id'
+});
+contact.belongsTo(customer, {
+    foreignKey: 'customer_id'
+});
 
-customer.hasMany(order);
-order.belongsTo(customer)
+customer.hasMany(order, {
+    foreignKey: 'order_id'
+});
+order.belongsTo(customer, {
+    foreignKey: 'customer_id'
+});
 
-order.hasOne(address);
-order.hasMany(position);
+order.hasMany(position, {
+    foreignKey: 'position_id'
+});
+order.hasOne(address, {
+    foreignKey: 'address_id'
+});
 
-employee.hasMany(contact);
+employee.hasMany(order, {
+    foreignKey: 'order_id'
+});
+order.belongsTo(employee, {
+    foreignKey: 'emp_id'
+});
 
-position.hasMany(attribute);
+employee.hasMany(contact, {
+    foreignKey: 'contact_id'
+});
+contact.belongsTo(employee, {
+    foreignKey: 'emp_id',
+    onDelete: 'CASCADE'
+});
+
+position.hasMany(attribute, {
+    foreignKey: 'attribute_id'
+});
+attribute.belongsTo(position, {
+    foreignKey: 'position_id',
+    onDelete: 'CASCADE'
+});
 
 module.exports = {
-    customer,
-    employee,
-    admin,
-    order,
-    position,
-    address,
-    contact,
-    attribute
+    customer, employee, position, attribute, contact, address, admin
 }
