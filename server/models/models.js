@@ -1,7 +1,7 @@
 "use strict";
 
 const sequelize = require('../db');
-const {DataTypes} = require('sequelize');
+const {DataTypes, or} = require('sequelize');
 const {add} = require("nodemon/lib/rules");
 
 const customer = sequelize.define('customer', {
@@ -67,55 +67,65 @@ const attribute = sequelize.define('attribute', {
     attr_value: {type: DataTypes.STRING, isNull: false}
 });
 
+const cart = sequelize.define('card', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
+    quantity: {type: DataTypes.INTEGER, min: 1, isNull: false},
+})
+
 customer.hasMany(address, {
-    foreignKey: 'address_id'
+    foreignKey: 'customer_id'
 });
 address.belongsTo(customer, {
     foreignKey: 'customer_id'
 });
 
 customer.hasMany(contact, {
-    foreignKey: 'contact_id'
+    foreignKey: 'customer_id'
 });
 contact.belongsTo(customer, {
     foreignKey: 'customer_id'
 });
 
 customer.hasMany(order, {
-    foreignKey: 'order_id'
+    foreignKey: 'customer_id'
 });
 order.belongsTo(customer, {
     foreignKey: 'customer_id'
 });
 
-order.hasMany(position, {
-    foreignKey: 'position_id'
-});
-order.hasOne(address, {
+address.hasMany(order, {
     foreignKey: 'address_id'
 });
+order.belongsTo(address, {
+    foreignKey: 'address_id'
+})
 
 employee.hasMany(order, {
-    foreignKey: 'order_id'
+    foreignKey: 'emp_id'
 });
 order.belongsTo(employee, {
     foreignKey: 'emp_id'
 });
 
 employee.hasMany(contact, {
-    foreignKey: 'contact_id'
+    foreignKey: 'emp_id'
 });
 contact.belongsTo(employee, {
-    foreignKey: 'emp_id',
-    onDelete: 'CASCADE'
+    foreignKey: 'emp_id'
 });
 
 position.hasMany(attribute, {
-    foreignKey: 'attribute_id'
+    foreignKey: 'position_id'
 });
 attribute.belongsTo(position, {
-    foreignKey: 'position_id',
-    onDelete: 'CASCADE'
+    foreignKey: 'position_id'
+});
+
+position.hasMany(cart, {
+    foreignKey: 'position_id'
+});
+cart.belongsTo(position, {
+    foreignKey: 'position_id'
 });
 
 module.exports = {
