@@ -57,6 +57,7 @@ entity Order {
     * position_id [FK]
     * customer_id [FK]
     * address_id [FK]
+    * emp_id [FK]
     * quantity
     * comment
     * is_special
@@ -77,6 +78,8 @@ entity Address {
 entity Contact {
     * contact_id
     --
+    * customer_id [FK]
+    * emp_id [FK]
     * type
     * string
 }
@@ -89,8 +92,9 @@ Customer ||--o{ Order
 Customer ||--o{ Contact
 
 Employee ||--o{ Contact
+Employee ||--o{ Order
 
-Position ||--o| Attribute
+Position ||--o{ Attribute
 
 @enduml
 ```
