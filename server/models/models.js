@@ -1,7 +1,7 @@
 "use strict";
 
 const sequelize = require('../db');
-const {DataTypes, or} = require('sequelize');
+const {DataTypes} = require('sequelize');
 const {add} = require("nodemon/lib/rules");
 
 const customer = sequelize.define('customer', {
@@ -126,6 +126,7 @@ position.hasMany(cart, {
 });
 cart.belongsTo(position, {
     foreignKey: 'position_id'
+
 });
 
 module.exports = {
