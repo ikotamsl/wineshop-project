@@ -46,7 +46,7 @@ const position = sequelize.define('position', {
     price: {type: DataTypes.REAL, isNull: false}
 });
 
-const address = sequelize.define('address', {
+const Address = sequelize.define('address', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
     country: {type: DataTypes.STRING, isNull: false},
     city: {type: DataTypes.STRING, isNull: false},
@@ -78,10 +78,10 @@ const cart_position = sequelize.define('cart_position', {
 
 
 
-customer.hasMany(address, {
+customer.hasMany(Address, {
     foreignKey: 'customer_id'
 });
-address.belongsTo(customer, {
+Address.belongsTo(customer, {
     foreignKey: 'customer_id'
 });
 
@@ -99,10 +99,10 @@ order.belongsTo(customer, {
     foreignKey: 'customer_id'
 });
 
-address.hasMany(order, {
+Address.hasMany(order, {
     foreignKey: 'address_id'
 });
-order.belongsTo(address, {
+order.belongsTo(Address, {
     foreignKey: 'address_id'
 })
 
@@ -149,5 +149,5 @@ cart_position.belongsTo(cart_position, {
 
 
 module.exports = {
-    customer, employee, position, attribute, contact, address, admin
+    customer, employee, position, attribute, contact, Address, admin
 }
