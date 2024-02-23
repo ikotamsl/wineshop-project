@@ -67,10 +67,16 @@ const attribute = sequelize.define('attribute', {
     attr_value: {type: DataTypes.STRING, isNull: false}
 });
 
-const cart = sequelize.define('card', {
+const cart = sequelize.define('cart', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
     quantity: {type: DataTypes.INTEGER, min: 1, isNull: false},
+});
+
+const cart_position = sequelize.define('cart_position', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true}
 })
+
+
 
 customer.hasMany(address, {
     foreignKey: 'customer_id'
@@ -121,13 +127,27 @@ attribute.belongsTo(position, {
     foreignKey: 'position_id'
 });
 
-position.hasMany(cart, {
-    foreignKey: 'position_id'
+customer.hasOne(cart,{
+    foreignKey: 'customer_id'
 });
-cart.belongsTo(position, {
-    foreignKey: 'position_id'
+cart.belongsTo(customer, {
+    foreignKey: 'customer_id'
+});
 
+cart.hasMany(cart_position, {
+    foreignKey: 'cart_id'
 });
+cart_position.belongsTo(cart, {
+    foreignKey: 'cart_id'
+});
+
+position.hasMany(cart_position, {
+    foreignKey: 'position_id'
+});
+cart_position.belongsTo(cart_position, {
+    foreignKey: 'position_id'
+})
+
 
 module.exports = {
     customer, employee, position, attribute, contact, address, admin

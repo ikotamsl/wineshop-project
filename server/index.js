@@ -15,7 +15,8 @@ const start = async () => {
         await sequelize.sync();
         app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
     } catch (e) {
-        console.log(e);
+        console.log(`Database error:\n${e}`);
+        process.exit(1);
     }
 }
 
