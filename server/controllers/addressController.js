@@ -4,12 +4,49 @@ const ApiError = require('../error/Error');
 class addressController {
     async get(req, res, next) {
         const query = req.query;
+        console.log(query);
+        console.log(Object.keys(query).length);
 
+        try {
+            if (Object.keys(query).length === 0) {
+                const addresses = await Address.findAll();
+                res.status(200).json(
+                    {
+                        data: [...addresses]
+                    }
+                );
+            }
+            else {
+                let filter = {}
 
+                if (query.id)
+                    filter.id = query.id;
+                if (query.country)
+                    filter.country = query.country
+                if (query.city)
+                    filter.city = query.city
+                if (query.house)
+                    filter.house = query.house
+                if (query.apartment)
+                    filter.apartment = query.apartment
+                if (query.zip)
+                    filter.zip = query.zip
+                if (query.customer_id)
+                    filter.customer_id = query.customer_id
 
-        // if () {
-        //     return next(ApiError.badRequest('no body!!!'));
-        // }
+                const addresses = await Address.findAll({
+                    where: filter
+                });
+                res.status(200).json(
+                    {
+                        data: [...addresses]
+                    }
+                );
+            }
+        } catch (e) {
+            console.log(e);
+            return next(ApiError.internalError('Error while getting addresses'));
+        }
     }
 
     async create(req, res, next) {
@@ -22,6 +59,7 @@ class addressController {
                 const address = await Address.create({
                     country: req.body.country,
                     city: req.body.city,
+                    street: req.body.street,
                     house: req.body.house,
                     apartment: req.body.apartment,
                     zip: req.body.zip,

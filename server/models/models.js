@@ -4,7 +4,7 @@ const sequelize = require('../db');
 const {DataTypes} = require('sequelize');
 const {add} = require("nodemon/lib/rules");
 
-const customer = sequelize.define('customer', {
+const Customer = sequelize.define('customer', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
     first_name: {type: DataTypes.STRING, primaryKey: false},
     second_name: {type: DataTypes.STRING, primaryKey: false},
@@ -50,6 +50,7 @@ const Address = sequelize.define('address', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
     country: {type: DataTypes.STRING, isNull: false},
     city: {type: DataTypes.STRING, isNull: false},
+    street: {type: DataTypes.STRING, isNull: false},
     house: {type: DataTypes.STRING, isNull: false},
     apartment: {type: DataTypes.STRING, isNull: false},
     zip: {type: DataTypes.STRING, isNull: false}
@@ -78,24 +79,24 @@ const cart_position = sequelize.define('cart_position', {
 
 
 
-customer.hasMany(Address, {
+Customer.hasMany(Address, {
     foreignKey: 'customer_id'
 });
-Address.belongsTo(customer, {
-    foreignKey: 'customer_id'
-});
-
-customer.hasMany(contact, {
-    foreignKey: 'customer_id'
-});
-contact.belongsTo(customer, {
+Address.belongsTo(Customer, {
     foreignKey: 'customer_id'
 });
 
-customer.hasMany(order, {
+Customer.hasMany(contact, {
     foreignKey: 'customer_id'
 });
-order.belongsTo(customer, {
+contact.belongsTo(Customer, {
+    foreignKey: 'customer_id'
+});
+
+Customer.hasMany(order, {
+    foreignKey: 'customer_id'
+});
+order.belongsTo(Customer, {
     foreignKey: 'customer_id'
 });
 
@@ -127,10 +128,10 @@ attribute.belongsTo(position, {
     foreignKey: 'position_id'
 });
 
-customer.hasOne(cart,{
+Customer.hasOne(cart,{
     foreignKey: 'customer_id'
 });
-cart.belongsTo(customer, {
+cart.belongsTo(Customer, {
     foreignKey: 'customer_id'
 });
 cart.hasMany(cart_position, {
@@ -147,7 +148,19 @@ cart_position.belongsTo(cart_position, {
     foreignKey: 'position_id'
 })
 
+// Hooks for data consistency
+
+Address.addHook('beforeCreate', async (instance, options) => {
+    if (!instance.customer_id) {
+        throw new Error('customer_id must be provided');
+    } else {
+        const secondModelInstance = await Customer.findByPk(instance.customer_id);
+        if (!secondModelInstance) {
+            throw new Error('Associated record in customers does not exist');
+        }
+    }
+});
 
 module.exports = {
-    customer, employee, position, attribute, contact, Address, admin
+    customer: Customer, employee, position, attribute, contact, Address, admin
 }
