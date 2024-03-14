@@ -24,12 +24,6 @@ const employee = sequelize.define('employee', {
     birth_date: {type: DataTypes.DATE}
 });
 
-const admin = sequelize.define('admin', {
-    id : {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
-    login: {type: DataTypes.STRING, primaryKey: false},
-    password: {type: DataTypes.STRING, primaryKey: false}
-});
-
 const order = sequelize.define('order', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
     quantity: {type: DataTypes.INTEGER, min: 1, isNull: false},
@@ -162,5 +156,5 @@ Address.addHook('beforeCreate', async (instance, options) => {
 });
 
 module.exports = {
-    customer: Customer, employee, position, attribute, contact, Address, admin
+    Customer, employee, position, attribute, contact, Address
 }

@@ -2,7 +2,6 @@ const Router = require('express');
 const router = new Router();
 
 const addressRouter = require('./addressRouter');
-const adminRouter = require('./adminRouter');
 const attributeRouter = require('./attributeRouter');
 const cartRouter = require('./cartRouter');
 const contactRouter = require('./contactRouter');
@@ -12,7 +11,6 @@ const orderRouter = require('./orderRouter');
 const positionRouter = require('./positionRouter');
 
 router.use('/customers', customerRouter);
-router.use('/admins', adminRouter);
 router.use('/addresses', addressRouter);
 router.use('/attributes', attributeRouter);
 router.use('/carts', cartRouter);
