@@ -3,21 +3,26 @@ const ApiError = require('../error/Error');
 
 class customerController {
     async getById(req, res, next) {
-        const query = req.path.id;
+        const customer_id = req.path.id;
 
         try {
+            const customer = await Customer.findByPk(customer_id);
 
+            if (customer === null)
+                return next(ApiError.notFound('Customer not found'));
+            else
+                res.status(200).json(customer);
         } catch (e) {
             console.log(e);
-            return next(ApiError.notFound('Customer not found'));
+            return next(ApiError.internalError('Bad request'));
         }
     }
 
     async getAll(req, res, next) {
-        const query = req.query;
-
         try {
+            const customers = await Customer.findAll();
 
+            res.status(200).json({data: [...customers]});
         } catch (e) {
             console.log(e);
             return next(ApiError.notFound('Customer not found'));
@@ -31,19 +36,6 @@ class customerController {
             if (!(req.body.login && req.body.password)) {
                 return next(ApiError.badRequest('Invalid input body'));
             } else {
-
-                Customer.addHook('beforeCreate', async (instance, options) => {
-                    if (!instance.login) {
-                        throw new Error(`Customer's login must be provided`);
-                    } else {
-                        const customerRow = await Customer.findAll({where: {login: req.body.login} });
-
-                        if (customerRow) {
-                            return next(ApiError.badRequest(`Customer with this login already exists`));
-                        }
-                    }
-                });
-
                 const customer = await Customer.create({
                     first_name: req.body?.first_name ? req.body?.first_name : null,
                     second_name: req.body?.second_name ? req.body?.second_name : null,

@@ -3,6 +3,7 @@
 const sequelize = require('../db');
 const {DataTypes} = require('sequelize');
 const {add} = require("nodemon/lib/rules");
+const ApiError = require("../error/Error");
 
 const Customer = sequelize.define('customer', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
@@ -151,6 +152,18 @@ Address.addHook('beforeCreate', async (instance, options) => {
         const secondModelInstance = await Customer.findByPk(instance.customer_id);
         if (!secondModelInstance) {
             throw new Error('Associated record in customers does not exist');
+        }
+    }
+});
+
+Customer.addHook('beforeCreate', async (instance) => {
+    if (!instance.login) {
+        throw new Error('login must be provided');
+    } else {
+        const customerRow = await Customer.findAll({where: {login: instance.login} });
+
+        if (customerRow.length > 0) {
+            throw new Error('Customer already exits');
         }
     }
 });
