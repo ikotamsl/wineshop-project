@@ -25,9 +25,8 @@ const employee = sequelize.define('employee', {
     birth_date: {type: DataTypes.DATE}
 });
 
-const order = sequelize.define('order', {
+const Order = sequelize.define('order', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
-    quantity: {type: DataTypes.INTEGER, min: 1, isNull: false},
     comment: {type: DataTypes.STRING, isNull: true},
     is_special: {type: DataTypes.BOOLEAN, isNull: false}
 });
@@ -63,13 +62,13 @@ const attribute = sequelize.define('attribute', {
     attr_value: {type: DataTypes.STRING, isNull: false}
 });
 
-const cart = sequelize.define('cart', {
+const Cart = sequelize.define('cart', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
-    quantity: {type: DataTypes.INTEGER, min: 1, isNull: false},
 });
 
-const cart_position = sequelize.define('cart_position', {
-    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true}
+const Cart_position = sequelize.define('cart_position', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
+    quantity: {type: DataTypes.INTEGER, min: 1, isNull: false},
 })
 
 
@@ -88,24 +87,24 @@ contact.belongsTo(Customer, {
     foreignKey: 'customer_id'
 });
 
-Customer.hasMany(order, {
+Customer.hasMany(Order, {
     foreignKey: 'customer_id'
 });
-order.belongsTo(Customer, {
+Order.belongsTo(Customer, {
     foreignKey: 'customer_id'
 });
 
-Address.hasMany(order, {
+Address.hasMany(Order, {
     foreignKey: 'address_id'
 });
-order.belongsTo(Address, {
+Order.belongsTo(Address, {
     foreignKey: 'address_id'
 })
 
-employee.hasMany(order, {
+employee.hasMany(Order, {
     foreignKey: 'emp_id'
 });
-order.belongsTo(employee, {
+Order.belongsTo(employee, {
     foreignKey: 'emp_id'
 });
 
@@ -123,25 +122,27 @@ attribute.belongsTo(position, {
     foreignKey: 'position_id'
 });
 
-Customer.hasOne(cart,{
+Customer.hasOne(Cart,{
     foreignKey: 'customer_id'
 });
-cart.belongsTo(Customer, {
+Cart.belongsTo(Customer, {
     foreignKey: 'customer_id'
 });
-cart.hasMany(cart_position, {
+Cart.hasMany(Cart_position, {
     foreignKey: 'cart_id'
 });
-cart_position.belongsTo(cart, {
+Cart.hasOne(Order, {
     foreignKey: 'cart_id'
 });
-
-position.hasMany(cart_position, {
+Cart_position.belongsTo(Cart, {
+    foreignKey: 'cart_id'
+});
+position.hasMany(Cart_position, {
     foreignKey: 'position_id'
 });
-cart_position.belongsTo(cart_position, {
+Cart_position.belongsTo(Cart_position, {
     foreignKey: 'position_id'
-})
+});
 
 // Hooks for data consistency
 
@@ -152,6 +153,17 @@ Address.addHook('beforeCreate', async (instance, options) => {
         const secondModelInstance = await Customer.findByPk(instance.customer_id);
         if (!secondModelInstance) {
             throw new Error('Associated record in customers does not exist');
+        }
+    }
+});
+
+Order.addHook('beforeCreate', async (instance, options) => {
+    if (!instance.is_special) {
+        const second = await Customer.findByPk(instance.customer_id);
+        const third = await Customer.findByPk(instance.emp_id);
+        const fourth = await Customer.findByPk(instance.address_id);
+        if (!second || !third || !fourth) {
+            throw new Error(`Check if you've provided address, customer or employee`);
         }
     }
 });
@@ -169,5 +181,5 @@ Customer.addHook('beforeCreate', async (instance) => {
 });
 
 module.exports = {
-    Customer, employee, position, attribute, contact, Address
+    Customer, employee, position, attribute, contact, Address, Order, Cart, Cart_position
 }

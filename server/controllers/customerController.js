@@ -3,12 +3,16 @@ const ApiError = require('../error/Error');
 
 class customerController {
     async getById(req, res, next) {
-        const customer_id = req.path.id;
+        const customer_id = req.params.id;
+
+        console.log(customer_id);
 
         try {
             const customer = await Customer.findByPk(customer_id);
 
-            if (customer === null)
+            console.log(customer);
+
+            if (!customer)
                 return next(ApiError.notFound('Customer not found'));
             else
                 res.status(200).json(customer);
