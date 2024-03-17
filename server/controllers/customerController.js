@@ -2,16 +2,9 @@ const {Customer} = require('../models/models')
 const ApiError = require('../error/Error');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const generateJwt = require('../lib/generateJwt')
 
-const generateJwt = (insObj) => {
-    return jwt.sign(
-        {id: insObj.id, login: insObj.login},
-        process.env.SECRET_KEY,
-        {expiresIn: '24h'}
-    )
-}
 class customerController {
-
     async login(req, res, next) {
         const {login, password} = req.body;
 
@@ -83,6 +76,11 @@ class customerController {
             console.log(e);
             return next(ApiError.internalError('Error while creating customer'));
         }
+    }
+
+    async check(req, res, next) {
+        const token = generateJwt({id: req.body.id, login: req.body.login, role: 'CUSTOMER'});
+        return res.status(200).json({token: token});
     }
 }
 

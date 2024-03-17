@@ -37,7 +37,8 @@ const position = sequelize.define('position', {
     type: {type: DataTypes.STRING, isNull: false},
     year: {type: DataTypes.INTEGER, isNull: false},
     grape: {type: DataTypes.STRING, isNull: false},
-    price: {type: DataTypes.REAL, isNull: false}
+    price: {type: DataTypes.REAL, isNull: false},
+    stock: {type: DataTypes.INTEGER, isNull: true}
 });
 
 const Address = sequelize.define('address', {
