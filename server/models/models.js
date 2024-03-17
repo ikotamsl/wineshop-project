@@ -3,8 +3,9 @@
 const sequelize = require('../db');
 const {DataTypes} = require('sequelize');
 const {add} = require("nodemon/lib/rules");
+const ApiError = require("../error/Error");
 
-const customer = sequelize.define('customer', {
+const Customer = sequelize.define('customer', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
     first_name: {type: DataTypes.STRING, primaryKey: false},
     second_name: {type: DataTypes.STRING, primaryKey: false},
@@ -24,15 +25,8 @@ const employee = sequelize.define('employee', {
     birth_date: {type: DataTypes.DATE}
 });
 
-const admin = sequelize.define('admin', {
-    id : {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
-    login: {type: DataTypes.STRING, primaryKey: false},
-    password: {type: DataTypes.STRING, primaryKey: false}
-});
-
-const order = sequelize.define('order', {
+const Order = sequelize.define('order', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
-    quantity: {type: DataTypes.INTEGER, min: 1, isNull: false},
     comment: {type: DataTypes.STRING, isNull: true},
     is_special: {type: DataTypes.BOOLEAN, isNull: false}
 });
@@ -43,13 +37,15 @@ const position = sequelize.define('position', {
     type: {type: DataTypes.STRING, isNull: false},
     year: {type: DataTypes.INTEGER, isNull: false},
     grape: {type: DataTypes.STRING, isNull: false},
-    price: {type: DataTypes.REAL, isNull: false}
+    price: {type: DataTypes.REAL, isNull: false},
+    stock: {type: DataTypes.INTEGER, isNull: true}
 });
 
-const address = sequelize.define('address', {
+const Address = sequelize.define('address', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
     country: {type: DataTypes.STRING, isNull: false},
     city: {type: DataTypes.STRING, isNull: false},
+    street: {type: DataTypes.STRING, isNull: false},
     house: {type: DataTypes.STRING, isNull: false},
     apartment: {type: DataTypes.STRING, isNull: false},
     zip: {type: DataTypes.STRING, isNull: false}
@@ -67,49 +63,49 @@ const attribute = sequelize.define('attribute', {
     attr_value: {type: DataTypes.STRING, isNull: false}
 });
 
-const cart = sequelize.define('cart', {
+const Cart = sequelize.define('cart', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
+});
+
+const Cart_position = sequelize.define('cart_position', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
     quantity: {type: DataTypes.INTEGER, min: 1, isNull: false},
-});
-
-const cart_position = sequelize.define('cart_position', {
-    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true}
 })
 
 
 
-customer.hasMany(address, {
+Customer.hasMany(Address, {
     foreignKey: 'customer_id'
 });
-address.belongsTo(customer, {
-    foreignKey: 'customer_id'
-});
-
-customer.hasMany(contact, {
-    foreignKey: 'customer_id'
-});
-contact.belongsTo(customer, {
+Address.belongsTo(Customer, {
     foreignKey: 'customer_id'
 });
 
-customer.hasMany(order, {
+Customer.hasMany(contact, {
     foreignKey: 'customer_id'
 });
-order.belongsTo(customer, {
+contact.belongsTo(Customer, {
     foreignKey: 'customer_id'
 });
 
-address.hasMany(order, {
+Customer.hasMany(Order, {
+    foreignKey: 'customer_id'
+});
+Order.belongsTo(Customer, {
+    foreignKey: 'customer_id'
+});
+
+Address.hasMany(Order, {
     foreignKey: 'address_id'
 });
-order.belongsTo(address, {
+Order.belongsTo(Address, {
     foreignKey: 'address_id'
 })
 
-employee.hasMany(order, {
+employee.hasMany(Order, {
     foreignKey: 'emp_id'
 });
-order.belongsTo(employee, {
+Order.belongsTo(employee, {
     foreignKey: 'emp_id'
 });
 
@@ -127,28 +123,64 @@ attribute.belongsTo(position, {
     foreignKey: 'position_id'
 });
 
-customer.hasOne(cart,{
+Customer.hasOne(Cart,{
     foreignKey: 'customer_id'
 });
-cart.belongsTo(customer, {
+Cart.belongsTo(Customer, {
     foreignKey: 'customer_id'
 });
-
-cart.hasMany(cart_position, {
+Cart.hasMany(Cart_position, {
     foreignKey: 'cart_id'
 });
-cart_position.belongsTo(cart, {
+Cart.hasOne(Order, {
     foreignKey: 'cart_id'
 });
-
-position.hasMany(cart_position, {
+Cart_position.belongsTo(Cart, {
+    foreignKey: 'cart_id'
+});
+position.hasMany(Cart_position, {
     foreignKey: 'position_id'
 });
-cart_position.belongsTo(cart_position, {
+Cart_position.belongsTo(Cart_position, {
     foreignKey: 'position_id'
-})
+});
 
+// Hooks for data consistency
+
+Address.addHook('beforeCreate', async (instance, options) => {
+    if (!instance.customer_id) {
+        throw new Error('customer_id must be provided');
+    } else {
+        const secondModelInstance = await Customer.findByPk(instance.customer_id);
+        if (!secondModelInstance) {
+            throw new Error('Associated record in customers does not exist');
+        }
+    }
+});
+
+Order.addHook('beforeCreate', async (instance, options) => {
+    if (!instance.is_special) {
+        const second = await Customer.findByPk(instance.customer_id);
+        const third = await Customer.findByPk(instance.emp_id);
+        const fourth = await Customer.findByPk(instance.address_id);
+        if (!second || !third || !fourth) {
+            throw new Error(`Check if you've provided address, customer or employee`);
+        }
+    }
+});
+
+Customer.addHook('beforeCreate', async (instance) => {
+    if (!instance.login) {
+        throw new Error('login must be provided');
+    } else {
+        const customerRow = await Customer.findAll({where: {login: instance.login} });
+
+        if (customerRow.length > 0) {
+            throw new Error('Customer already exits');
+        }
+    }
+});
 
 module.exports = {
-    customer, employee, position, attribute, contact, address, admin
+    Customer, employee, position, attribute, contact, Address, Order, Cart, Cart_position
 }
