@@ -1,7 +1,35 @@
 const {Customer} = require('../models/models')
 const ApiError = require('../error/Error');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
+const generateJwt = (insObj) => {
+    return jwt.sign(
+        {id: insObj.id, login: insObj.login},
+        process.env.SECRET_KEY,
+        {expiresIn: '24h'}
+    )
+}
 class customerController {
+
+    async login(req, res, next) {
+        const {login, password} = req.body;
+
+        const customer = await Customer.findOne({where: {login: login}});
+
+        if (!customer) {
+            return next(ApiError.badRequest('Customer not found'));
+        }
+
+        let comparePassword = bcrypt.compareSync(String(password), String(customer.dataValues.password));
+
+        if (!comparePassword) {
+            return next(ApiError.badRequest('Incorrect password'));
+        }
+
+        const token = generateJwt({id: customer.dataValues.id, login: customer.dataValues.login});
+        res.status(200).json({token: token});
+    }
     async getById(req, res, next) {
         const customer_id = req.params.id;
 
@@ -45,7 +73,7 @@ class customerController {
                     second_name: req.body?.second_name ? req.body?.second_name : null,
                     patronymic_name: req.body?.patronymic_name ? req.body?.patronymic_name : null,
                     login: req.body.login,
-                    password: req.body.password,
+                    password: await bcrypt.hash(String(req.body.password), 3),
                     birth_date: req.body?.birth_date ? req.body?.birth_date : null
                 });
 
