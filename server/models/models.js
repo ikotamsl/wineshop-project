@@ -34,9 +34,7 @@ const Order = sequelize.define('order', {
 const Position = sequelize.define('position', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
     name: {type: DataTypes.STRING, isNull: false},
-    type: {type: DataTypes.STRING, isNull: false},
     year: {type: DataTypes.INTEGER, isNull: false},
-    grape: {type: DataTypes.STRING, isNull: false},
     price: {type: DataTypes.REAL, isNull: false},
     stock: {type: DataTypes.INTEGER, isNull: true}
 });
@@ -78,7 +76,7 @@ const Type = sequelize.define('type', {
     code: {type: DataTypes.STRING, isNull: false},
 });
 
-const Grape = sequelize.define('type', {
+const Grape = sequelize.define('grape', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
     name: {type: DataTypes.STRING, isNull: false},
     code: {type: DataTypes.STRING, isNull: false},
@@ -134,10 +132,10 @@ Position.hasMany(Attribute, {
 Attribute.belongsTo(Position, {
     foreignKey: 'position_id'
 });
-Position.hasOne(Type, {
+Position.belongsTo(Type, {
     foreignKey: 'type_id'
 });
-Position.hasOne(Grape, {
+Position.belongsTo(Grape, {
     foreignKey: 'grape_id'
 });
 
