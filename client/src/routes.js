@@ -21,7 +21,7 @@ export const authRouter = [
 
 export const publicRoutes = [
     {
-        path: '/wine/:id',
+        path: '/positions/:id',
         Component: winePage
     },
     {

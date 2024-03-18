@@ -3,19 +3,21 @@ import {observer} from "mobx-react-lite";
 import {Context} from "../index";
 import {Container, ListGroup} from "react-bootstrap";
 
-const TypeBar = observer(() => {
+const YearBar = observer(() => {
     const {wine} = useContext(Context);
     return (
         <Container>
             <ListGroup className={"mt-4 d-flex"}>
-                {wine.types.map(type =>
+                {wine.years.map(year =>
                     <ListGroup.Item
+                        color={year === wine.selectedYear ? '#7B0323' : 'black'}
+                        border={year === wine.selectedYear ? '#7B0323' : 'black'}
+                        active={year === wine.selectedYear}
+                        key={year}
+                        onClick={() => wine.setSelectedYear(year)}
                         style={{cursor: 'pointer'}}
-                        active={type.id === wine.selectedType.id}
-                        key={type.id}
-                        onClick={() => wine.setSelectedType(type)}
                     >
-                        {type.name}
+                        {year}
                     </ListGroup.Item>
                 )}
             </ListGroup>
@@ -23,4 +25,4 @@ const TypeBar = observer(() => {
     );
 });
 
-export default TypeBar;
+export default YearBar;
