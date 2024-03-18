@@ -15,7 +15,7 @@ const Customer = sequelize.define('customer', {
     birth_date: {type: DataTypes.DATE}
 });
 
-const employee = sequelize.define('employee', {
+const Employee = sequelize.define('employee', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
     first_name: {type: DataTypes.STRING, primaryKey: false},
     second_name: {type: DataTypes.STRING, primaryKey: false},
@@ -31,7 +31,7 @@ const Order = sequelize.define('order', {
     is_special: {type: DataTypes.BOOLEAN, isNull: false}
 });
 
-const position = sequelize.define('position', {
+const Position = sequelize.define('position', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
     name: {type: DataTypes.STRING, isNull: false},
     type: {type: DataTypes.STRING, isNull: false},
@@ -51,13 +51,13 @@ const Address = sequelize.define('address', {
     zip: {type: DataTypes.STRING, isNull: false}
 });
 
-const contact = sequelize.define('contact', {
+const Contact = sequelize.define('contact', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
     type: {type: DataTypes.STRING, isNull: false},
     string: {type: DataTypes.STRING, isNull: false}
 });
 
-const attribute = sequelize.define('attribute', {
+const Attribute = sequelize.define('attribute', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
     attr_name: {type: DataTypes.STRING, isNull: false},
     attr_value: {type: DataTypes.STRING, isNull: false}
@@ -70,7 +70,19 @@ const Cart = sequelize.define('cart', {
 const Cart_position = sequelize.define('cart_position', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
     quantity: {type: DataTypes.INTEGER, min: 1, isNull: false},
-})
+});
+
+const Type = sequelize.define('type', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
+    name: {type: DataTypes.STRING, isNull: false},
+    code: {type: DataTypes.STRING, isNull: false},
+});
+
+const Grape = sequelize.define('type', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
+    name: {type: DataTypes.STRING, isNull: false},
+    code: {type: DataTypes.STRING, isNull: false},
+});
 
 
 
@@ -81,10 +93,10 @@ Address.belongsTo(Customer, {
     foreignKey: 'customer_id'
 });
 
-Customer.hasMany(contact, {
+Customer.hasMany(Contact, {
     foreignKey: 'customer_id'
 });
-contact.belongsTo(Customer, {
+Contact.belongsTo(Customer, {
     foreignKey: 'customer_id'
 });
 
@@ -102,25 +114,31 @@ Order.belongsTo(Address, {
     foreignKey: 'address_id'
 })
 
-employee.hasMany(Order, {
+Employee.hasMany(Order, {
     foreignKey: 'emp_id'
 });
-Order.belongsTo(employee, {
-    foreignKey: 'emp_id'
-});
-
-employee.hasMany(contact, {
-    foreignKey: 'emp_id'
-});
-contact.belongsTo(employee, {
+Order.belongsTo(Employee, {
     foreignKey: 'emp_id'
 });
 
-position.hasMany(attribute, {
+Employee.hasMany(Contact, {
+    foreignKey: 'emp_id'
+});
+Contact.belongsTo(Employee, {
+    foreignKey: 'emp_id'
+});
+
+Position.hasMany(Attribute, {
     foreignKey: 'position_id'
 });
-attribute.belongsTo(position, {
+Attribute.belongsTo(Position, {
     foreignKey: 'position_id'
+});
+Position.hasOne(Type, {
+    foreignKey: 'type_id'
+});
+Position.hasOne(Grape, {
+    foreignKey: 'grape_id'
 });
 
 Customer.hasOne(Cart,{
@@ -138,7 +156,7 @@ Cart.hasOne(Order, {
 Cart_position.belongsTo(Cart, {
     foreignKey: 'cart_id'
 });
-position.hasMany(Cart_position, {
+Position.hasMany(Cart_position, {
     foreignKey: 'position_id'
 });
 Cart_position.belongsTo(Cart_position, {
@@ -182,5 +200,5 @@ Customer.addHook('beforeCreate', async (instance) => {
 });
 
 module.exports = {
-    Customer, employee, position, attribute, contact, Address, Order, Cart, Cart_position
+    Customer, Employee, Position, Attribute, Contact, Address, Order, Cart, Cart_position, Grape, Type
 }

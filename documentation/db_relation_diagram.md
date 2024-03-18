@@ -37,10 +37,24 @@ entity Position {
     * position_id [PK]
     --
     * name
-    * type
+    * type_id [FK]
     * year
-    * grape
+    * grape_id [FK]
     * price
+}
+
+entity Type {
+    * type_id [PK]
+    --
+    * name
+    * code
+}
+
+entity Grape {
+    * grape_id [PK]
+    --
+    * name
+    * code
 }
 
 entity Attribute {
@@ -95,6 +109,9 @@ Employee ||--o{ Contact
 Employee ||--o{ Order
 
 Position ||--o{ Attribute
+Position }|--|| Grape
+Position }|--|| Type
+
 
 @enduml
 ```
