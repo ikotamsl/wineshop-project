@@ -1,0 +1,48 @@
+openapi: 3.0.3
+info:
+  title: Title
+  description: Title
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+    description: local development
+paths:
+  /api/customers:
+    get:
+      summary: Get all customers
+      description: >
+        Gets all customers from in a system. No pagination is allowd
+      responses:
+        200:
+          description: All customers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/all_customers'
+
+components:
+  schemas:
+    all_customers:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                minimum: 1
+              first_name:
+                type: string
+              second_name:
+                type: string
+              patronymic_name:
+                type: string
+              login:
+                type: string
+              password:
+                type: string
+              birth_date:
+                type: string
+                format: date

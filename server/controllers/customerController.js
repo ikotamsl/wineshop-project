@@ -10,6 +10,8 @@ class customerController {
 
         const customer = await Customer.findOne({where: {login: login}});
 
+        console.log(customer);
+
         if (!customer) {
             return next(ApiError.badRequest('Customer not found'));
         }
@@ -20,7 +22,7 @@ class customerController {
             return next(ApiError.badRequest('Incorrect password'));
         }
 
-        const token = generateJwt({id: customer.dataValues.id, login: customer.dataValues.login});
+        const token = generateJwt({id: customer.dataValues.id, login: customer.dataValues.login, role: 'CUSTOMER'});
         res.status(200).json({token: token});
     }
     async getById(req, res, next) {
