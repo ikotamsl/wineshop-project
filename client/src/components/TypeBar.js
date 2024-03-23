@@ -10,7 +10,13 @@ const TypeBar = observer(() => {
             <ListGroup className={"mt-4 d-flex"}>
                 {wine.types.map(type =>
                     <ListGroup.Item
-                        style={{cursor: 'pointer'}}
+                        style={
+                            {
+                                cursor: 'pointer',
+                                background: type.id === wine.selectedType.id ? '#7B0323' : 'white',
+                                border: type.id === wine.selectedType.id ? '#7B0323' : 'white',
+                            }
+                        }
                         active={type.id === wine.selectedType.id}
                         key={type.id}
                         onClick={() => wine.setSelectedType(type)}

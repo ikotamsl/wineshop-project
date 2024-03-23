@@ -10,12 +10,16 @@ const YearBar = observer(() => {
             <ListGroup className={"mt-4 d-flex"}>
                 {wine.years.map(year =>
                     <ListGroup.Item
-                        color={year === wine.selectedYear ? '#7B0323' : 'black'}
-                        border={year === wine.selectedYear ? '#7B0323' : 'black'}
                         active={year === wine.selectedYear}
                         key={year}
                         onClick={() => wine.setSelectedYear(year)}
-                        style={{cursor: 'pointer'}}
+                        style={
+                            {
+                                cursor: 'pointer',
+                                background: year === wine.selectedYear ? '#7B0323' : 'white',
+                                border: year === wine.selectedYear ? '#7B0323' : 'white',
+                            }
+                        }
                     >
                         {year}
                     </ListGroup.Item>

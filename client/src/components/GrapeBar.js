@@ -13,7 +13,13 @@ const GrapeBar = observer(() => {
                 {
                     wine.grapes.map(grape =>
                         <ListGroup.Item
-                            style={{cursor: 'pointer'}}
+                            style={
+                                {
+                                    cursor: 'pointer',
+                                    background: grape.id === wine.selectedGrape.id ? '#7B0323' : 'white',
+                                    border: grape.id === wine.selectedGrape.id ? '#7B0323' : 'white',
+                                }
+                            }
                             active={grape.id === wine.selectedGrape.id}
                             onClick={() => wine.setSelectedGrape(grape)}
                             key={grape.id}

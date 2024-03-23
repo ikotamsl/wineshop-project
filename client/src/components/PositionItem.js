@@ -1,13 +1,14 @@
 import React from 'react';
 import {Card, Col, Image} from "react-bootstrap";
 import {useHistory} from "react-router-dom";
+import {POSITION_ROUTE} from "../utils/const";
 
 const PositionItem = ({position}) => {
     const history = useHistory();
 
     return (
         <Col md={3} onClick={
-            () => history.push(`/positions/${position.id}` )
+            () => history.push(`${POSITION_ROUTE}/${position.id}` )
         }>
             <Card
                 style={
