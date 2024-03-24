@@ -4,7 +4,16 @@ import Checkout from "./pages/Checkout";
 import winePage from "./pages/winePage";
 import Auth from "./pages/Auth";
 import Shop from "./pages/Shop";
-import {AUTH_ROUTE, CART_ROUTE, CHECKOUT_ROUTE, HOME_ROUTE, ORDERS_ROUTE, POSITION_ROUTE} from "./utils/const";
+import {
+    AUTH_ROUTE,
+    CART_ROUTE,
+    CHECKOUT_ROUTE,
+    HOME_ROUTE,
+    ORDERS_ROUTE,
+    POSITION_ROUTE,
+    SPECIAL_ORDER_ROUTE
+} from "./utils/const";
+import SpecialOrder from "./pages/SpecialOrder";
 export const authRouter = [
     {
         path: `${ORDERS_ROUTE}`,
@@ -21,6 +30,10 @@ export const authRouter = [
 ];
 
 export const publicRoutes = [
+    {
+        path: `${SPECIAL_ORDER_ROUTE}`,
+        Component: SpecialOrder
+    },
     {
         path: `${POSITION_ROUTE}/:id`,
         Component: winePage

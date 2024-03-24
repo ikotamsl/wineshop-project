@@ -34,23 +34,28 @@ class orderController {
         const body = req.body;
 
         try {
-            if (body?.is_special !== undefined) {
-                if (body.is_special === null || body.is_special === false) {
-                    if (body?.customer_id && body?.address_id && body?.cart_id) {
-                        const order = await Order.create(req.body);
-                    } else {
-                        return next(ApiError.badRequest('customer, address or cart connection is required'));
-                    }
-                } else {
-                    const order = await Order.create(req.body);
-                }
-            }
-            if (!body.quantity || !body.is_special)
-                return next(ApiError.badRequest('Invalid input'));
-
-            const order = await Order.create(req.body);
-
-            res.status(201).json({message: `Order ${order.id} created`});
+             if (body?.is_special) {
+                 const order = await Order.create(req.body);
+                 res.status(201).json({message: `Order ${order.id} created`});
+             }
+        //
+        // try {
+        //     if (body?.is_special !== undefined) {
+        //         if (body.is_special === null || body.is_special === false) {
+        //             if (body?.customer_id && body?.address_id && body?.cart_id) {
+        //                 const order = await Order.create(req.body);
+        //             } else {
+        //                 return next(ApiError.badRequest('customer, address or cart connection is required'));
+        //             }
+        //         } else {
+        //             const order = await Order.create(req.body);
+        //         }
+        //     }
+        //     if (!body.quantity || !body.is_special)
+        //         return next(ApiError.badRequest('Invalid input'));
+        //
+        //     const order = await Order.create(req.body);
+        //
         } catch (e) {
             console.log(e);
             return next(ApiError.internalError('Error while creating an order'));

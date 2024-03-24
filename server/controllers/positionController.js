@@ -31,6 +31,9 @@ class positionController {
                     {
                         model: Grape,
                         where: grape_filter
+                    },
+                    {
+                        model: Attribute,
                     }
                 ]
             });
