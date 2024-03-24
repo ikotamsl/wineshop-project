@@ -17,7 +17,7 @@ const TypeBar = observer(() => {
                                 border: type.id === wine.selectedType.id ? '#7B0323' : 'white',
                             }
                         }
-                        active={type.id === wine.selectedType.id}
+                        active={type.code === wine.selectedType.code}
                         key={type.id}
                         onClick={() => wine.setSelectedType(type)}
                     >

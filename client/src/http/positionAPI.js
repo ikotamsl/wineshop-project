@@ -13,10 +13,16 @@ export const getGrapes = async () => {
 }
 
 export const getPositions = async (type_code, grape_code) => {
-    return await $host.get('/api/positions', {
+    const {data} = await $host.get('/api/positions', {
         params: {
             type_code: type_code,
             grape_code: grape_code
         }
     });
+    return data;
+}
+
+export const getOnePosition = async (id) => {
+    const {data} = await $host.get('/api/positions/' + id);
+    return data;
 }

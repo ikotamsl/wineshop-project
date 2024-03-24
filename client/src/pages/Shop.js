@@ -4,7 +4,7 @@ import TypeBar from "../components/TypeBar";
 import GrapeBar from "../components/GrapeBar";
 import PositionList from "../components/PositionList";
 import {Context} from "../index";
-import {getGrapes, getTypes} from "../http/positionAPI";
+import {getGrapes, getPositions, getTypes} from "../http/positionAPI";
 import {observer} from "mobx-react-lite";
 
 const Shop = observer(() => {
@@ -14,9 +14,15 @@ const Shop = observer(() => {
     useEffect(() => {
         getTypes().then(data => wine.setTypes(data.data)).catch(e => console.log(e));
         getGrapes().then(data => wine.setGrapes(data.data)).catch(e => console.log(e));
-
+        getPositions().then(data => wine.setWines(data.data)).catch(e => console.log(e));
 
     }, []);
+
+    useEffect(() => {
+        getPositions(wine.selectedType.code, wine.selectedGrape.code).then(data => {
+            wine.setWines(data.data);
+        })
+    }, [wine.selectedType, wine.selectedGrape])
 
     return (
         <Container>

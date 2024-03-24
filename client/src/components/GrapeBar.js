@@ -20,7 +20,7 @@ const GrapeBar = observer(() => {
                                     border: grape.id === wine.selectedGrape.id ? '#7B0323' : 'white',
                                 }
                             }
-                            active={grape.id === wine.selectedGrape.id}
+                            active={grape.code === wine.selectedGrape.code}
                             onClick={() => wine.setSelectedGrape(grape)}
                             key={grape.id}
                             className={"p-3"}
