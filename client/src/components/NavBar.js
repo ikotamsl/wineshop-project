@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import {Context} from "../index";
 import {Container, Navbar, Nav, Button} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
-import {AUTH_ROUTE} from "../utils/const";
+import {AUTH_ROUTE, SPECIAL_ORDER_ROUTE} from "../utils/const";
 import {useHistory} from "react-router-dom";
 
 const NavBar = observer(() => {
@@ -17,7 +17,7 @@ const NavBar = observer(() => {
         <Navbar bg="light" data-bs-theme="light">
             <Container>
                 <Navbar.Brand href="/" style={{color: '#7B0323'}}>Wineterria</Navbar.Brand>
-                <Button variant={"outline-warning"}>Order your preferred bottle there!</Button>
+                <Button variant={"outline-warning"} onClick={() => history.push(SPECIAL_ORDER_ROUTE)}>Order your preferred bottle there!</Button>
                 {customer.isAuth ?
                     <Nav className="ml-auto">
                         <Button variant={"outline-primary"} onClick={() => logOut()}>Exit</Button>

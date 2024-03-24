@@ -3,6 +3,7 @@ import {Button, Card, Col, Container, Image, ListGroup, ListGroupItem, Row} from
 import stockPic from '../static/stock_wine_pic.png';
 import {getOnePosition} from "../http/positionAPI";
 import {useParams} from "react-router-dom";
+import data from "bootstrap/js/src/dom/data";
 const WinePage = () => {
     // position and attributes variables are for testing only
     // They MUST be commented out or deleted before going to production
@@ -10,31 +11,22 @@ const WinePage = () => {
     let attributes = [];
     const [wine, setWine] = useState({info: []})
     const {id} = useParams();
-    console.log(getOnePosition(id));
 
     useEffect(() => {
-        getOnePosition(id).then(data => setWine(data));
+        getOnePosition(id).then(data => {
+            setWine(data);
+        });
     }, []);
 
-    attributes = wine.attributes;
+    useEffect(() => {
+        // Check if wine exists and has the 'attributes' key
+        if (wine && wine.attributes) {
+            // Now you can safely access wine.attributes
+        }
+    }, [wine]); // Add wine as a dependency
 
-    const position = {
-        id: 1,
-        name: 'Chevalier Noir',
-        price: 250,
-        type: {
-            id: 1,
-            code: 'red_dry',
-            name: 'Red Dry'
-        },
-        grape: {
-            id: 1,
-            code: 'merlot',
-            name: 'Merlot'
-        },
-        year: 2022,
-        stock: 15
-    };
+    if (wine.attributes)
+        attributes = [...wine.attributes];
 
     return (
         <Container mt={4} style={{width: '50%'}}>
@@ -45,14 +37,14 @@ const WinePage = () => {
             <hr/>
             <h3>Additional attributes:</h3>
             <ListGroup>
-                {/*{*/}
-                {/*    attributes.map(e =>*/}
-                {/*    <ListGroupItem>*/}
-                {/*        <h5>{e.attr_name}</h5>*/}
-                {/*        <p>{e.attr_value}</p>*/}
-                {/*    </ListGroupItem>*/}
-                {/*    )*/}
-                {/*}*/}
+                {
+                    attributes.map(e =>
+                    <ListGroupItem>
+                        <h5>{e.attr_name}</h5>
+                        <p>{e.attr_value}</p>
+                    </ListGroupItem>
+                    )
+                }
             </ListGroup>
             <h3>Price: {wine.price}$</h3>
             <Button variant={'outline-dark'}>Add to cart</Button>
