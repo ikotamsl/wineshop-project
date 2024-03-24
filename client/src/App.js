@@ -11,16 +11,21 @@ const App = observer(() => {
     const {customer} = useContext(Context);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        check().then(data => {
-            customer.setCustomer(true);
-            customer.setIsAuth(true);
-        }).finally(() => setLoading(false));
-    }, []);
+    try {
+        useEffect(() => {
+            check().then(data => {
+                customer.setCustomer(true);
+                customer.setIsAuth(true);
+            }).catch(e => console.log(e)).finally(() => setLoading(false));
+        }, []);
 
-    if (loading) {
-        return <Spinner animation={'grow'}/>
+        if (loading) {
+            return <Spinner animation={'grow'}/>
+        }
+    } catch (e) {
+        console.log(e);
     }
+
     return (
         <BrowserRouter>
             <NavBar/>
