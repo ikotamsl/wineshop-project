@@ -9,7 +9,7 @@ const WinePage = () => {
     // They MUST be commented out or deleted before going to production
 
     let attributes = [];
-    const [wine, setWine] = useState({info: []})
+    const [wine, setWine] = useState({attributes: []})
     const {id} = useParams();
 
     useEffect(() => {
@@ -17,16 +17,6 @@ const WinePage = () => {
             setWine(data);
         });
     }, []);
-
-    useEffect(() => {
-        // Check if wine exists and has the 'attributes' key
-        if (wine && wine.attributes) {
-            // Now you can safely access wine.attributes
-        }
-    }, [wine]); // Add wine as a dependency
-
-    if (wine.attributes)
-        attributes = [...wine.attributes];
 
     return (
         <Container mt={4} style={{width: '50%'}}>
@@ -38,7 +28,7 @@ const WinePage = () => {
             <h3>Additional attributes:</h3>
             <ListGroup>
                 {
-                    attributes.map(e =>
+                    wine.attributes.map(e =>
                     <ListGroupItem>
                         <h5>{e.attr_name}</h5>
                         <p>{e.attr_value}</p>

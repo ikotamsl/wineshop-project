@@ -7,13 +7,14 @@ import Shop from "./pages/Shop";
 import {
     AUTH_ROUTE,
     CART_ROUTE,
-    CHECKOUT_ROUTE,
+    CHECKOUT_ROUTE, EMPLOYEE_ROUTE,
     HOME_ROUTE,
     ORDERS_ROUTE,
     POSITION_ROUTE,
     SPECIAL_ORDER_ROUTE
 } from "./utils/const";
 import SpecialOrder from "./pages/SpecialOrder";
+import EmpOrders from "./pages/EmpOrders";
 export const authRouter = [
     {
         path: `${ORDERS_ROUTE}`,
@@ -26,6 +27,10 @@ export const authRouter = [
     {
         path: `${CHECKOUT_ROUTE}`,
         Component: Checkout
+    },
+    {
+        path: `${EMPLOYEE_ROUTE}`,
+        Component: EmpOrders
     }
 ];
 

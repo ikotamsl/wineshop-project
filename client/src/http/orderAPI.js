@@ -7,15 +7,16 @@ export const placeOrder = async (body) => {
     return data;
 }
 
-export const getPositions = async (type_code, grape_code) => {
-    const {data} = await $host.get('/api/positions', {
-        params: {
-            type_code: type_code,
-            grape_code: grape_code
-        }
-    });
+export const getOrders = async (config) => {
+    let data = {};
+
+    if (config)
+        data = (await $host.get('/api/orders', config)).data;
+    else
+        data = (await $host.get('/api/orders')).data;
     return data;
 }
+
 
 export const getOnePosition = async (id) => {
     const {data} = await $host.get('/api/positions/' + id);
