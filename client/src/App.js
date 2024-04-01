@@ -4,18 +4,29 @@ import AppRouter from "./components/AppRouter";
 import NavBar from "./components/NavBar";
 import {observer} from "mobx-react-lite";
 import {Context} from "./index";
-import {check} from "./http/userAPI";
+import {check, checkEmp} from "./http/userAPI";
 import {Spinner} from "react-bootstrap";
 
 const App = observer(() => {
-    const {customer} = useContext(Context);
+    const {customer, employee} = useContext(Context);
     const [loading, setLoading] = useState(true);
+
+    console.log(`employee`, employee);
+    console.log(`customer`, customer);
 
     try {
         useEffect(() => {
             check().then(data => {
-                customer.setCustomer(true);
+                customer.setCustomer(customer);
                 customer.setIsAuth(true);
+            }).catch(e => console.log(e)).finally(() => setLoading(false));
+        }, []);
+
+
+        useEffect(() => {
+            checkEmp().then(data => {
+                employee.setIsAuth(true);
+                employee.setEmployee(employee);
             }).catch(e => console.log(e)).finally(() => setLoading(false));
         }, []);
 

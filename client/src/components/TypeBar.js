@@ -19,7 +19,14 @@ const TypeBar = observer(() => {
                         }
                         active={type.code === wine.selectedType.code}
                         key={type.id}
-                        onClick={() => wine.setSelectedType(type)}
+                        onClick={() => {
+                                if (type.id === wine.selectedType.id) {
+                                    wine.setSelectedType({}); // Deselect if already selected
+                                } else {
+                                    wine.setSelectedType(type); // Select if not selected
+                                }
+                            }
+                        }
                     >
                         {type.name}
                     </ListGroup.Item>

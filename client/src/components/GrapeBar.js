@@ -21,7 +21,15 @@ const GrapeBar = observer(() => {
                                 }
                             }
                             active={grape.code === wine.selectedGrape.code}
-                            onClick={() => wine.setSelectedGrape(grape)}
+                            onClick={
+                                () => {
+                                    if (grape.id === wine.selectedGrape.id) {
+                                        wine.setSelectedGrape({}); // Deselect if already selected
+                                    } else {
+                                        wine.setSelectedGrape(grape); // Select if not selected
+                                    }
+                                }
+                            }
                             key={grape.id}
                             className={"p-3"}
                         >

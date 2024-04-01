@@ -4,10 +4,11 @@ import {customerLogin, empLogin} from "../http/userAPI";
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
 import {useHistory} from "react-router-dom";
-import {HOME_ROUTE} from "../utils/const";
+import {EMPLOYEE_ROUTE, HOME_ROUTE} from "../utils/const";
+import employeeStore from "../store/employeeStore";
 
 const Auth = observer(() => {
-    const {customer} = useContext(Context);
+    const {customer, employee} = useContext(Context);
     const history = useHistory();
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
@@ -15,9 +16,11 @@ const Auth = observer(() => {
     const click = async (e) => {
         try {
             if (e.target.id === 'emp_button') {
+                const data = await empLogin(login, password);
 
-                // Emp login method needed there -->
-                return null;
+                employee.setIsAuth(true);
+                employee.setEmployee(employee);
+                history.push(EMPLOYEE_ROUTE);
             }
             if (e.target.id === 'cust_button') {
                 const data = await customerLogin(login, password);

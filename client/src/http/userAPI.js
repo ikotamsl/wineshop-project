@@ -7,7 +7,9 @@ export const customerLogin = async (login, password) => {
 }
 
 export const empLogin = async (login, password) => {
-    const data = await $host.post('/api/employees/', {login, password});
+    const {data} = await $host.post('/api/employees/login', {login, password});
+    localStorage.setItem('token', data.token);
+    return jwtDecode(data.token);
 }
 
 export const check = async () => {
@@ -15,3 +17,8 @@ export const check = async () => {
     localStorage.setItem('token', data.token);
     return jwtDecode(data.token);
 }
+
+export const checkEmp = async () => {
+    const {data} = await $auth_host.get('/api/employees/auth');
+    localStorage.setItem('token', data.token);
+    return jwtDecode(data.token);}

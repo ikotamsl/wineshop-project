@@ -197,6 +197,17 @@ Customer.addHook('beforeCreate', async (instance) => {
     }
 });
 
+Employee.addHook('beforeCreate', async (instance) => {
+    if (!instance.login) {
+        throw new Error('login must be provided');
+    } else {
+        const employeeRow = await Employee.findAll({where: {login: instance.login} });
+
+        if (employeeRow.length > 0) {
+            throw new Error('Employee already exits');
+        }
+    }
+});
 module.exports = {
     Customer, Employee, Position, Attribute, Contact, Address, Order, Cart, Cart_position, Grape, Type
 }
