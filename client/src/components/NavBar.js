@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import {Context} from "../index";
 import {Container, Navbar, Nav, Button} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
-import {AUTH_ROUTE, EMPLOYEE_ROUTE, HOME_ROUTE, SPECIAL_ORDER_ROUTE} from "../utils/const";
+import {AUTH_ROUTE, CART_ROUTE, EMPLOYEE_ROUTE, HOME_ROUTE, SPECIAL_ORDER_ROUTE} from "../utils/const";
 import {useHistory} from "react-router-dom";
 
 const NavBar = observer(() => {
@@ -42,6 +42,11 @@ const NavBar = observer(() => {
                 }
                 {customer.isAuth ?
                     <Nav className="ml-auto">
+                        <Button
+                            variant={"outline-secondary"}
+                            style={{marginRight: "5%"}}
+                            onClick={() => history.push(CART_ROUTE)}
+                        >Cart</Button>
                         <Button variant={"outline-primary"} onClick={() => logOut()}>Exit</Button>
                     </Nav>
                         :
