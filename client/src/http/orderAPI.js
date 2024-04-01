@@ -1,4 +1,5 @@
 import {$auth_host, $host} from "./index";
+import qs from 'qs';
 import {jwtDecode} from "jwt-decode";
 import {type} from "@testing-library/user-event/dist/type";
 
@@ -8,12 +9,7 @@ export const placeOrder = async (body) => {
 }
 
 export const getOrders = async (config) => {
-    let data = {};
-
-    if (config)
-        data = (await $host.get('/api/orders', config)).data;
-    else
-        data = (await $host.get('/api/orders')).data;
+    const {data} = await $host.get('/api/orders', config);
     return data;
 }
 

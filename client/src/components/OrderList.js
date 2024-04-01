@@ -6,12 +6,16 @@ import {Context} from "../index";
 
 const OrdersList = observer(() => {
 
-    const {employee} = useContext(Context);
-
+    const {customer, employee} = useContext(Context);
     const [orders, setOrders] = useState({data: []});
 
+    customer.setCustomer(customer);
+
     useEffect(() => {
-        getOrders().then(data => setOrders(data));
+        if (employee.isAuth)
+            getOrders().then(data => setOrders(data));
+        if (customer.isAuth)
+            getOrders({customer_id: customer.id}).then()
     }, []);
 
     let filteredData = [];
