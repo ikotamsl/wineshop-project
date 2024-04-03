@@ -21,4 +21,10 @@ export const check = async () => {
 export const checkEmp = async () => {
     const {data} = await $auth_host.get('/api/employees/auth');
     localStorage.setItem('token', data.token);
-    return jwtDecode(data.token);}
+    return jwtDecode(data.token);
+}
+
+export const getCustomerCart = async (id) => {
+    const {data} = await $auth_host.get('/api/customers/' + id + '/cart');
+    return data;
+}

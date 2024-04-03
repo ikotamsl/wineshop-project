@@ -1,19 +1,25 @@
-import React, {useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Button, Container, Image, ListGroup} from "react-bootstrap";
+import {getGrapes, getOnePosition, getPositions, getTypes} from "../http/positionAPI";
+import {Context} from "../index";
+import {getOrders} from "../http/orderAPI";
+import {getCustomerCart} from "../http/userAPI";
 
-const cart = [
-    {
-        id: 1,
-        quantity: 5,
-        position: {
-            id: 1,
-            name: 'Chevalier Noir'
+const cart = {
+    "id": 1,
+    "customer_id": 1,
+    "cart_positions": [
+        {
+            "id": 1,
+            "quantity": 3,
+            "cart_id": 1,
+            "position_id": 1
         }
-    }
-];
+    ]
+}
 
-const Counter = () => {
-    const [count, setCount] = useState(0);
+const Counter = ({initial}) => {
+    const [count, setCount] = useState(initial);
 
     const increment = () => {
         setCount(prevCount => prevCount + 1);
@@ -35,12 +41,46 @@ const Counter = () => {
 
 
 const Cart = () => {
+    const {customer} = useContext(Context);
+    const [cart, setCart] = useState({positions: []})
+
+    useEffect(() => {
+        getCustomerCart(customer.id).then(data => {
+            let positions = [];
+
+            const cartData = data;
+
+            console.log(cartData)
+
+            data.cart_positions.forEach(e => {
+                getOnePosition(e.id).then(data => {
+                    positions.push(
+                        {
+                            id: data.id,
+                            name: data.name,
+                            quantity: e.quantity
+                        }
+                    );
+                    setCart(
+                        {
+                            id: cartData.id,
+                            customer_id: cartData.customer_id,
+                            positions: [...positions]
+                        }
+                    );
+                })
+            });
+        });
+        }, []);
+
+    console.log(cart);
+
     return (
         <Container>
             <h1>Your cart</h1>
             <ListGroup>
                 {
-                    cart.map(e =>
+                    cart.positions.map(e =>
                         <ListGroup.Item
                             key={e.id}
                             className={"p-3"}
@@ -49,9 +89,9 @@ const Cart = () => {
                                 <Image width={168} height={168} src={'../../public/favicon.ico'}
                                        style={{position: 'static'}}/>
                                 <div style={{marginRight: '10px', marginLeft: '5%'}}>
-                                    <h3>{e.position.name}</h3>
+                                    <h3>{e.name}</h3>
                                     <h1>Quantity</h1>
-                                    <Counter></Counter>
+                                    <Counter initial={e.quantity}></Counter>
                                 </div>
                             </div>
                         </ListGroup.Item>
