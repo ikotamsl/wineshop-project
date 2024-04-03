@@ -8,5 +8,6 @@ router.get('/auth', authMiddleware, customerController.check)
 router.post('/login', customerController.login);
 router.get('/:id', customerController.getById);
 router.post('/', customerController.create);
+router.get('/:id/cart', customerController.getCustomerCart)
 
 module.exports = router;

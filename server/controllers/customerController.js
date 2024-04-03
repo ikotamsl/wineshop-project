@@ -1,8 +1,9 @@
-const {Customer} = require('../models/models')
+const {Customer, Cart, Cart_position, Position} = require('../models/models')
 const ApiError = require('../error/Error');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const generateJwt = require('../lib/generateJwt')
+const {json} = require("express");
 
 class customerController {
     async login(req, res, next) {
@@ -53,6 +54,25 @@ class customerController {
         } catch (e) {
             console.log(e);
             return next(ApiError.notFound('Customer not found'));
+        }
+    }
+    
+    async getCustomerCart(req, res, next) {
+
+        try {
+            let cart = await Cart.findOne(
+                {
+                    include: [
+                        {
+                            model: Cart_position
+                        }
+                    ]
+                }
+            );
+
+            res.status(200).json(cart);
+        } catch (e) {
+            
         }
     }
 

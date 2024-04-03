@@ -151,15 +151,10 @@ Cart.hasMany(Cart_position, {
 Cart.hasOne(Order, {
     foreignKey: 'cart_id'
 });
-Cart_position.belongsTo(Cart, {
-    foreignKey: 'cart_id'
-});
-Position.hasMany(Cart_position, {
-    foreignKey: 'position_id'
-});
-Cart_position.belongsTo(Cart_position, {
-    foreignKey: 'position_id'
-});
+
+Position.belongsToMany(Cart, {through: 'cart_position', foreignKey: 'position_id'});
+
+Cart.belongsToMany(Position, {through: 'cart_position', foreignKey: 'cart_id'})
 
 // Hooks for data consistency
 
