@@ -1,22 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Button, Container, Image, ListGroup} from "react-bootstrap";
-import {getGrapes, getOnePosition, getPositions, getTypes} from "../http/positionAPI";
+import {getOnePosition} from "../http/positionAPI";
 import {Context} from "../index";
-import {getOrders} from "../http/orderAPI";
 import {getCustomerCart} from "../http/userAPI";
-
-const cart = {
-    "id": 1,
-    "customer_id": 1,
-    "cart_positions": [
-        {
-            "id": 1,
-            "quantity": 3,
-            "cart_id": 1,
-            "position_id": 1
-        }
-    ]
-}
 
 const Counter = ({initial}) => {
     const [count, setCount] = useState(initial);
@@ -58,7 +44,8 @@ const Cart = () => {
                         {
                             id: data.id,
                             name: data.name,
-                            quantity: e.quantity
+                            quantity: e.quantity,
+                            total: e.quantity * data.price
                         }
                     );
                     setCart(
@@ -90,6 +77,8 @@ const Cart = () => {
                                        style={{position: 'static'}}/>
                                 <div style={{marginRight: '10px', marginLeft: '5%'}}>
                                     <h3>{e.name}</h3>
+                                    <h1>Total</h1>
+                                    <h2>{e.total}</h2>
                                     <h1>Quantity</h1>
                                     <Counter initial={e.quantity}></Counter>
                                 </div>
