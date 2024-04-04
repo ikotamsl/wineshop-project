@@ -24,6 +24,39 @@ class cartController {
         }
     }
 
+    async updateCart(req, res, next) {
+        try {
+            if (req.body.quantity && req.body.quantity < 1)
+                return next(ApiError.badRequest('Quantity must be more than 0'));
+
+            if (req.body.quantity && req.body.cart_position && req.body.position) {
+                const position = await Position.findByPk(req.body.position);
+
+                const stock = JSON.parse(JSON.stringify(position)).stock;
+
+                if (req.body.quantity < stock) {
+                    const updateCartPosition = await Cart_position.update(
+                        {
+                            quantity: req.body.quantity
+                        },
+                        {
+                            where: {
+                                id: req.body.cart_position
+                            }
+                        }
+                    );
+
+                    res.status(200).json({message: 'Successfully changed quantity'});
+                } else {
+                    next(ApiError.badRequest('Not enough bottles in stock for this position'));
+                }
+            }
+        } catch (e) {
+            console.log(e);
+            return next(ApiError.notFound('Customer not found'));
+        }
+    }
+
     async getAll(req, res, next) {
         try {
             const customers = await Customer.findAll();
@@ -32,30 +65,6 @@ class cartController {
         } catch (e) {
             console.log(e);
             return next(ApiError.notFound('Customer not found'));
-        }
-    }
-
-    async create(req, res, next) {
-        console.log(req.body)
-
-        try {
-            if (!(req.body.login && req.body.password)) {
-                return next(ApiError.badRequest('Invalid input body'));
-            } else {
-                const customer = await Customer.create({
-                    first_name: req.body?.first_name ? req.body?.first_name : null,
-                    second_name: req.body?.second_name ? req.body?.second_name : null,
-                    patronymic_name: req.body?.patronymic_name ? req.body?.patronymic_name : null,
-                    login: req.body.login,
-                    password: await bcrypt.hash(String(req.body.password), 3),
-                    birth_date: req.body?.birth_date ? req.body?.birth_date : null
-                });
-
-                res.status(201).json(customer);
-            }
-        } catch (e) {
-            console.log(e);
-            return next(ApiError.internalError('Error while creating customer'));
         }
     }
 }
