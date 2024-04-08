@@ -14,6 +14,8 @@ const NavBar = observer(() => {
         employee.setIsAuth(false);
         employee.setEmployee({});
 
+        localStorage.clear();
+
         history.push(HOME_ROUTE);
     }
 

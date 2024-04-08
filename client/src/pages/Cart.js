@@ -3,28 +3,7 @@ import {Button, Container, Image, ListGroup} from "react-bootstrap";
 import {getOnePosition} from "../http/positionAPI";
 import {Context} from "../index";
 import {getCustomerCart} from "../http/userAPI";
-
-const Counter = ({initial}) => {
-    const [count, setCount] = useState(initial);
-
-    const increment = () => {
-        setCount(prevCount => prevCount + 1);
-    };
-
-    const decrement = () => {
-        if (count > 0)
-            setCount(prevCount => prevCount - 1);
-    };
-
-    return (
-        <div className={"d-flex flex-row bd-highlight mb-3"} style={{alignItems: 'center'}}>
-            <Button onClick={decrement} style={{marginRight: '5%'}} variant={"outline-primary"}>-</Button>
-            <h4>{count}</h4>
-            <Button onClick={increment} style={{marginLeft: '5%'}} variant={"outline-primary"}>+</Button>
-        </div>
-    );
-};
-
+import Counter from "../components/Component";
 
 const Cart = () => {
     const {customer} = useContext(Context);
@@ -44,6 +23,7 @@ const Cart = () => {
                         {
                             id: data.id,
                             name: data.name,
+                            cart_position: e.id,
                             quantity: e.quantity,
                             total: e.quantity * data.price
                         }
@@ -78,15 +58,16 @@ const Cart = () => {
                                 <div style={{marginRight: '10px', marginLeft: '5%'}}>
                                     <h3>{e.name}</h3>
                                     <h1>Total</h1>
-                                    <h2>{e.total}</h2>
+                                    <h2>{e.total} USD</h2>
                                     <h1>Quantity</h1>
-                                    <Counter initial={e.quantity}></Counter>
+                                    <Counter initial={e.quantity} context={e} cart={cart}></Counter>
                                 </div>
                             </div>
                         </ListGroup.Item>
                     )
                 }
             </ListGroup>
+            <Button className={'m-5'}>Create order</Button>
         </Container>
 );
 };
