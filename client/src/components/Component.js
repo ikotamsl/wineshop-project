@@ -31,7 +31,13 @@ const Counter = ({initial, context, cart}) => {
     }
 
     useEffect(() => {
-        updateCart(cart.id, body).catch(data => console.log(data)).then(data => console.log('success', data));
+        updateCart(cart.id, body).catch(data => console.log(data)).then(data => {
+            if (!data) {
+                alert('Not enough bottles in stock');
+            }
+
+            console.log('success', data);
+        });
     }, [count]);
 
 

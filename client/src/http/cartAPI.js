@@ -10,7 +10,6 @@ export const updateCart = async (id, body) => {
         const {data} = await $auth_host.patch('/api/carts/' + id, body); // id is for cart's id and body is a patch po
         return data;
     } catch (e) {
-        alert('Not enough bottles');
         console.log(e);
     }
 }

@@ -18,7 +18,7 @@ const Cart = () => {
             console.log(cartData)
 
             data.cart_positions.forEach(e => {
-                getOnePosition(e.id).then(data => {
+                getOnePosition(e.position_id).then(data => {
                     positions.push(
                         {
                             id: data.id,
