@@ -2,8 +2,6 @@
 
 const sequelize = require('../db');
 const {DataTypes} = require('sequelize');
-const {add} = require("nodemon/lib/rules");
-const ApiError = require("../error/Error");
 
 const Customer = sequelize.define('customer', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, unique: true},
@@ -36,7 +34,8 @@ const Position = sequelize.define('position', {
     name: {type: DataTypes.STRING, isNull: false},
     year: {type: DataTypes.INTEGER, isNull: false},
     price: {type: DataTypes.REAL, isNull: false},
-    stock: {type: DataTypes.INTEGER, isNull: true}
+    stock: {type: DataTypes.INTEGER, isNull: true},
+    image: {type: DataTypes.STRING, isNull: true},
 });
 
 const Address = sequelize.define('address', {

@@ -24,6 +24,7 @@ const Cart = () => {
                             id: data.id,
                             name: data.name,
                             cart_position: e.id,
+                            image: data.image,
                             quantity: e.quantity,
                             total: e.quantity * data.price
                         }
@@ -53,7 +54,7 @@ const Cart = () => {
                             className={"p-3"}
                         >
                             <div className="d-flex align-items-center">
-                                <Image width={168} height={168} src={'../../public/favicon.ico'}
+                                <Image width={168} height={168} src={e.image}
                                        style={{position: 'static'}}/>
                                 <div style={{marginRight: '10px', marginLeft: '5%'}}>
                                     <h3>{e.name}</h3>

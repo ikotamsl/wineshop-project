@@ -36,7 +36,6 @@ const WinePage = () => {
     // position and attributes variables are for testing only
     // They MUST be commented out or deleted before going to production
 
-    let attributes = [];
     const history = useHistory();
     const {customer} = useContext(Context);
     const [wine, setWine] = useState({attributes: []});
@@ -45,12 +44,17 @@ const WinePage = () => {
     const [cart, setCart] = useState({positions: []})
 
     useEffect(() => {
+        let cartData = {};
+        let positions = [];
+
         getCustomerCart(customer.id).then(data => {
-            let positions = [];
+            cartData = data;
 
-            const cartData = data;
-
-            console.log(cartData)
+            setCart({
+                id: cartData.id,
+                customer_id: cartData.customer_id,
+                positions: [...positions]
+            });
 
             data.cart_positions.forEach(e => {
                 getOnePosition(e.position_id).then(data => {
@@ -63,14 +67,13 @@ const WinePage = () => {
                             total: e.quantity * data.price
                         }
                     );
-                    setCart(
-                        {
-                            id: cartData.id,
-                            customer_id: cartData.customer_id,
-                            positions: [...positions]
-                        }
-                    );
-                })
+
+                    setCart({
+                        id: cartData.id,
+                        customer_id: cartData.customer_id,
+                        positions: [...positions]
+                    });
+                });
             });
         });
     }, []);
@@ -78,6 +81,7 @@ const WinePage = () => {
     const handleCountChange = (newCount) => {
         setCount(newCount);
     };
+
     useEffect(() => {
         getOnePosition(id).then(data => {
             setWine(data);
@@ -96,9 +100,12 @@ const WinePage = () => {
                 quantity: count
             }).then(
                 data => {
-                    if (!data)
+                    if (!data) {
                         alert('The bottle may have been already added');
-
+                        console.log(data);
+                    } else {
+                        alert('Bottle added!');
+                    }
                     history.push(HOME_ROUTE);
                 }
             );
@@ -111,7 +118,7 @@ const WinePage = () => {
         <Container mt={4} style={{width: '50%'}}>
             <h2>{wine.name}</h2>
             <div style={{width: 500, height: 500, background: 'darkred'}}>
-                <Image height={"100%"} width={"100%"} alt={'No Image'} src={"https://maltwineasia.com/wp-content/uploads/2023/01/Amuse-Bouche-Napa-Valley-Red-Blend-2019.jpg"}/>
+                <Image height={"100%"} width={"100%"} alt={'No Image'} src={wine.image}/>
             </div>
             <hr/>
             <h3>Additional attributes:</h3>

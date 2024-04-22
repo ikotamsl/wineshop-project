@@ -22,7 +22,7 @@ const PositionItem = ({position}) => {
                 }
 
             >
-                <Image width={168} height={168} src={'../../public/favicon.ico'} style={{position: 'static'}}/>
+                <Image width={168} height={168} src={position.image} style={{position: 'static'}}/>
                 <div>
                     <div>{position.name}</div>
                 </div>
