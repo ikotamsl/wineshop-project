@@ -11,8 +11,8 @@ const App = observer(() => {
     const {customer, employee} = useContext(Context);
     const [loading, setLoading] = useState(true);
 
-    console.log(`employee`, employee);
-    console.log(`customer`, customer);
+    console.log(`employee`, employee.isAuth);
+    console.log(`customer`, customer.isAuth);
 
     try {
         useEffect(() => {
