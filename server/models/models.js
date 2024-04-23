@@ -171,8 +171,8 @@ Address.addHook('beforeCreate', async (instance, options) => {
 Order.addHook('beforeCreate', async (instance, options) => {
     if (!instance.is_special) {
         const second = await Customer.findByPk(instance.customer_id);
-        const third = await Customer.findByPk(instance.emp_id);
-        const fourth = await Customer.findByPk(instance.address_id);
+        const third = await Cart.findByPk(instance.cart_id);
+        const fourth = await Address.findByPk(instance.address_id);
         if (!second || !third || !fourth) {
             throw new Error(`Check if you've provided address, customer or employee`);
         }
